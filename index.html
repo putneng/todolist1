@@ -5,60 +5,163 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>To Do List Putri</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-image: url('assets/background.jpg');
-            background-size: cover;
+        * {
             margin: 0;
             padding: 0;
-            color: #000;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f4f7f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
+            padding: 20px;
         }
         header {
-            background-color: teal;
+            width: 100%;
+            background-color: #45a29e;
             padding: 20px;
             text-align: center;
             color: white;
-            font-size: 24px;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
         .container {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            width: 100%;
+            max-width: 1200px;
+            gap: 20px;
             padding: 20px;
+        }
+        .todo-card {
+            background: #ffffff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            padding: 20px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 580px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .section-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #1f4068;
+            margin: 15px 0 10px;
+            text-align: center;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 10px;
         }
         th, td {
-            border: 1px solid #000;
-            padding: 10px;
-            text-align: left;
+            padding: 12px;
+            text-align: center;
         }
         th {
-            background-color: teal;
+            background-color: #1f4068;
             color: white;
+            font-weight: bold;
         }
-        button {
-            background-color: teal;
+        .priority-high {
+            color: #ff4d4d;
+            font-weight: bold;
+        }
+        .priority-normal {
+            color: #45a29e;
+        }
+        tr:nth-child(even) {
+            background-color: #eaf2f1;
+        }
+        .todo-actions button {
+            background-color: #1f4068;
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 8px;
             cursor: pointer;
-            margin: 5px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
-        button:hover {
-            background-color: #005f5f;
+        .todo-actions button:hover {
+            background-color: #162d47;
+        }
+        .add-todo-btn {
+            background-color: #1f4068;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .add-todo-btn:hover {
+            background-color: #162d47;
+        }
+        .category-label {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+            font-weight: bold;
+        }
+        .category-work { background-color: #ff914d; }
+        .category-personal { background-color: #5cdb95; }
+        #addTodoDialog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .dialog-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
         footer {
-            background-color: teal;
+            background-color: #1f4068;
             color: white;
             text-align: center;
             padding: 10px;
-            position: relative;
-            bottom: 0;
             width: 100%;
         }
         .hidden {
             display: none;
+        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .todo-card {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -69,26 +172,44 @@
 </header>
 
 <div class="container">
-    <div>
-        <button onclick="showAddTodo()">Tambah Jadwal</button>
+    <div class="todo-card">
+        <button class="add-todo-btn" onclick="showAddTodo()">+ Tambah Jadwal</button>
+        <div class="section-title">Jadwal Hari Ini</div>
+        <table id="todoTable">
+            <thead>
+                <tr>
+                    <th>Ceklis</th>
+                    <th>DESKRIPSI</th>
+                    <th>KATEGORI</th>
+                    <th>JADWAL</th>
+                    <th>JAM</th>
+                    <th>PRIORITAS</th>
+                </tr>
+            </thead>
+            <tbody id="todoBody">
+                <tr>
+                    <td colspan="6" style="text-align: center;">Belum ada jadwal, tambahkan jadwal terlebih dahulu.</td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 
-    <table id="todoTable">
-        <thead>
-            <tr>
-                <th>DESKRIPSI</th>
-                <th>JADWAL</th>
-                <th>JAM</th>
-                <th>PRIORITAS</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        <tbody id="todoBody">
-            <tr>
-                <td colspan="5" style="text-align: center;">Belum ada jadwal, tambahkan jadwal terlebih dahulu.</td>
-            </tr>
-        </tbody>
-    </table>
+    <div class="todo-card">
+        <div class="section-title">Jadwal Selesai</div>
+        <table id="completedTable" class="hidden">
+            <thead>
+                <tr>
+                    <th>DESKRIPSI</th>
+                    <th>KATEGORI</th>
+                    <th>JADWAL</th>
+                    <th>JAM</th>
+                </tr>
+            </thead>
+            <tbody id="completedBody">
+                <!-- Completed tasks will be added here -->
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <footer>
@@ -96,44 +217,51 @@
 </footer>
 
 <!-- Add Todo Dialog -->
-<div id="addTodoDialog" class="hidden">
-    <div style="padding: 20px; background-color: white; border: 1px solid #000; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 1000;">
+<div id="addTodoDialog">
+    <div class="dialog-content">
         <h3>Tambah Jadwal</h3>
         <label>Deskripsi:</label>
-        <input type="text" id="descriptionInput"><br>
+        <input type="text" id="descriptionInput" style="width: 100%; padding: 8px;"><br>
+        <label>Kategori:</label>
+        <select id="categoryInput" style="width: 100%; padding: 8px;">
+            <option value="work">Pekerjaan</option>
+            <option value="personal">Pribadi</option>
+        </select><br>
         <label>Tanggal:</label>
-        <input type="date" id="dateInput"><br>
+        <input type="date" id="dateInput" style="width: 100%; padding: 8px;"><br>
         <label>Jam:</label>
-        <input type="time" id="timeInput"><br>
+        <input type="time" id="timeInput" style="width: 100%; padding: 8px;"><br>
         <label>Prioritas:</label>
-        <select id="priorityInput">
+        <select id="priorityInput" style="width: 100%; padding: 8px;">
             <option value="false">Biasa</option>
             <option value="true">Prioritas</option>
         </select><br><br>
-        <button onclick="addTodo()">Tambah</button>
-        <button onclick="hideAddTodo()">Batal</button>
+        <button class="todo-actions" onclick="addTodo()">Tambah</button>
+        <button class="todo-actions" onclick="hideAddTodo()">Batal</button>
     </div>
 </div>
 
 <script>
     let todos = [];
+    let completedTodos = [];
 
     function showAddTodo() {
-        document.getElementById('addTodoDialog').classList.remove('hidden');
+        document.getElementById('addTodoDialog').style.display = 'flex';
     }
 
     function hideAddTodo() {
-        document.getElementById('addTodoDialog').classList.add('hidden');
+        document.getElementById('addTodoDialog').style.display = 'none';
     }
 
     function addTodo() {
         const description = document.getElementById('descriptionInput').value;
+        const category = document.getElementById('categoryInput').value;
         const date = document.getElementById('dateInput').value;
         const time = document.getElementById('timeInput').value;
         const isPriority = document.getElementById('priorityInput').value === 'true';
 
         if (description && date && time) {
-            todos.push({description, date, time, isPriority});
+            todos.push({description, category, date, time, isPriority});
             updateTodoTable();
             hideAddTodo();
         }
@@ -141,42 +269,51 @@
 
     function updateTodoTable() {
         const todoBody = document.getElementById('todoBody');
-        todoBody.innerHTML = ''; // Clear existing rows
+        todoBody.innerHTML = ''; 
 
         todos.forEach((todo, index) => {
             const row = document.createElement('tr');
             row.innerHTML = `
+                <td><input type="checkbox" onclick="completeTask(${index})"></td>
                 <td>${todo.description}</td>
+                <td><span class="category-label ${todo.category === 'work' ? 'category-work' : 'category-personal'}">
+                    ${todo.category === 'work' ? 'Pekerjaan' : 'Pribadi'}
+                </span></td>
                 <td>${todo.date}</td>
                 <td>${todo.time}</td>
-                <td>${todo.isPriority ? 'Prioritas' : 'Biasa'}</td>
-                <td>
-                    <button onclick="editTodo(${index})">Edit</button>
-                    <button onclick="deleteTodo(${index})">Hapus</button>
+                <td class="${todo.isPriority ? 'priority-high' : 'priority-normal'}">
+                    ${todo.isPriority ? 'Prioritas' : 'Biasa'}
                 </td>
             `;
             todoBody.appendChild(row);
         });
-
-        if (todos.length === 0) {
-            todoBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Belum ada jadwal, tambahkan jadwal terlebih dahulu.</td></tr>';
-        }
     }
 
-    function editTodo(index) {
-        const todo = todos[index];
-        document.getElementById('descriptionInput').value = todo.description;
-        document.getElementById('dateInput').value = todo.date;
-        document.getElementById('timeInput').value = todo.time;
-        document.getElementById('priorityInput').value = todo.isPriority;
-
-        showAddTodo();
-        deleteTodo(index); // Remove todo after loading it for editing
-    }
-
-    function deleteTodo(index) {
+    function completeTask(index) {
+        completedTodos.push(todos[index]);
         todos.splice(index, 1);
         updateTodoTable();
+        updateCompletedTable();
+    }
+
+    function updateCompletedTable() {
+        const completedBody = document.getElementById('completedBody');
+        completedBody.innerHTML = ''; 
+
+        completedTodos.forEach(todo => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${todo.description}</td>
+                <td><span class="category-label ${todo.category === 'work' ? 'category-work' : 'category-personal'}">
+                    ${todo.category === 'work' ? 'Pekerjaan' : 'Pribadi'}
+                </span></td>
+                <td>${todo.date}</td>
+                <td>${todo.time}</td>
+            `;
+            completedBody.appendChild(row);
+        });
+
+        document.getElementById('completedTable').classList.toggle('hidden', completedTodos.length === 0);
     }
 </script>
 
